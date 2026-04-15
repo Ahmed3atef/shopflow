@@ -11,13 +11,28 @@ class SalesOrders(Document):
 		self.calculate_total()
 		self.validate_stock()
   
+	def on_submit(self):
+		self.db_set("status", "Confirmed")
+		frappe.msgprint(
+			f"Sales Order {self.name} has been confirmed.",
+			title="Order Confirmed",
+			indicator="green"
+		)
+
+	def on_cancel(self):
+		self.db_set("status", "Cancelled")
+		frappe.msgprint(
+			f"Sales Order {self.name} has been cancelled.",
+			title="Order Cancelled",
+			indicator="red"
+		)
   
 	def calculate_total(self):
 		total = 0
 		for item in self.items:
 			if not item.qty or not item.rate:
 				continue
-			item.amount = item.qty + item.rate
+			item.amount = item.qty * item.rate
 			total += item.amount
 		self.total = total
   
