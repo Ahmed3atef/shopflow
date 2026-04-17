@@ -6,44 +6,39 @@ from frappe.model.document import Document
 
 
 class Product(Document):
-	
- 
-	def validate(self):
+	def validate(self) -> None:
 		if self.price <= 0:
 			frappe.throw("Price must be greater than zero.")
 			return
-  
-	def before_save(self):
+
+	def before_save(self) -> None:
 		if self.sku:
 			self.sku = self.sku.upper()
-   
-	def after_insert(self):
+
+	def after_insert(self) -> None:
 		frappe.msgprint(
 			f"Product {self.sku} has been added to catalog.",
 			title="Product Created",
-			indicator="green"
+			indicator="green",
 		)
 
 
 @frappe.whitelist()
-def get_low_stock_products(threshold=10):
-    threshold = int(threshold)
-    
-    products = frappe.get_list(
+def get_low_stock_products(threshold: int | str = 10) -> list[dict]:
+	threshold = int(threshold)
+
+	products = frappe.get_list(
 		"Product",
 		filters={"stock_qty": ["<", threshold]},
 		fields=["name", "sku", "stock_qty"],
-		order_by="stock_qty asc"
+		order_by="stock_qty asc",
 	)
-    
-    return products
+
+	return products
 
 
 @frappe.whitelist(allow_guest=True)
-def get_product_catalog():
-    return frappe.db.get_list(
-        "Product",
-        fields=["sku", "price"],
-        order_by="sku asc",
-        ignore_permissions=True 
-    )
+def get_product_catalog() -> list[dict]:
+	return frappe.db.get_list(
+		"Product", fields=["sku", "price"], order_by="sku asc", ignore_permissions=True
+	)
