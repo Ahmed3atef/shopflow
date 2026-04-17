@@ -4,7 +4,9 @@
 import frappe
 
 
-def execute(filters=None):
+def execute(
+	filters: dict | None = None,
+) -> tuple[list[dict], list[dict], str | None, dict | None]:
 	filters = filters or {}
 	columns = get_column()
 	data = get_data_qb(filters)
@@ -12,29 +14,25 @@ def execute(filters=None):
 	return columns, data, None, chart
 
 
-def get_column():
+def get_column() -> list[dict]:
 	return [
-		 {
-            "label": "Order Date",
-            "fieldname": "order_date",
-            "fieldtype": "Date",
-            "width": 120
-        },
-        {
-            "label": "Number of Orders",
-            "fieldname": "order_count",
-            "fieldtype": "Int",
-            "width": 140
-        },
-        {
-            "label": "Total Sales",
-            "fieldname": "total_sales",
-            "fieldtype": "Currency",
-            "width": 140
-        }
+		{"label": "Order Date", "fieldname": "order_date", "fieldtype": "Date", "width": 120},
+		{
+			"label": "Number of Orders",
+			"fieldname": "order_count",
+			"fieldtype": "Int",
+			"width": 140,
+		},
+		{
+			"label": "Total Sales",
+			"fieldname": "total_sales",
+			"fieldtype": "Currency",
+			"width": 140,
+		},
 	]
 
-def get_data_sql(filters):
+
+def get_data_sql(filters: dict) -> list[dict]:
 	conditions = "WHERE docstatus = 1"
 
 	if filters.get("from_date"):
@@ -43,7 +41,7 @@ def get_data_sql(filters):
 		conditions += " AND order_date <= %(to_date)s"
 
 	return frappe.db.sql(
-        f"""
+		f"""
         SELECT
             order_date,
             COUNT(name) AS order_count,
@@ -56,12 +54,14 @@ def get_data_sql(filters):
         ORDER BY
             order_date ASC
         """,
-        filters,
-        as_dict=True
-    )
+		filters,
+		as_dict=True,
+	)
 
-def get_data_qb(filters):
+
+def get_data_qb(filters: dict) -> list[dict]:
 	from frappe.query_builder.functions import Count, Sum
+
 	SO = frappe.qb.DocType("Sales Order s")
 
 	query = (
@@ -83,20 +83,16 @@ def get_data_qb(filters):
 
 	return query.run(as_dict=True)
 
-def get_chart(data):
+
+def get_chart(data: list[dict]) -> dict | None:
 	if not data:
 		return None
 
 	return {
-        "data": {
-            "labels": [str(row.order_date) for row in data],
-            "datasets": [
-                {
-                    "name": "Total Sales",
-                    "values": [row.total_sales for row in data]
-                }
-            ]
-        },
-        "type": "pie",
-        "fieldtype": "Currency"
-    }
+		"data": {
+			"labels": [str(row.order_date) for row in data],
+			"datasets": [{"name": "Total Sales", "values": [row.total_sales for row in data]}],
+		},
+		"type": "pie",
+		"fieldtype": "Currency",
+	}
