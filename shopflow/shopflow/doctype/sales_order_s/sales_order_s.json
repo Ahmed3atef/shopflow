@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:customer_name",
  "creation": "2026-04-13 23:02:53.149132",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -8,7 +9,9 @@
   "customer_name",
   "order_date",
   "items",
-  "total"
+  "total",
+  "status",
+  "amended_from"
  ],
  "fields": [
   {
@@ -16,7 +19,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Customer Name",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "order_date",
@@ -37,15 +41,35 @@
    "fieldtype": "Currency",
    "label": "Total",
    "read_only": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nConfirmed\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales Order s",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-04-14 00:09:39.275962",
+ "modified": "2026-04-15 11:13:05.342607",
  "modified_by": "Administrator",
  "module": "ShopFlow",
  "name": "Sales Order s",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

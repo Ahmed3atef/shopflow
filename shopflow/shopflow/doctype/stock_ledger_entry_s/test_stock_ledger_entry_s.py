@@ -1,0 +1,9 @@
+# Copyright (c) 2026, ahmed.atef and Contributors
+# See license.txt
+
+# import frappe
+from frappe.tests.utils import FrappeTestCase
+
+
+class TestStockLedgerEntrys(FrappeTestCase):
+	pass

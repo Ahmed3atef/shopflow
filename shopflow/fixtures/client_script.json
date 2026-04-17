@@ -1,0 +1,13 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Item",
+  "enabled": 1,
+  "modified": "2026-04-16 16:29:55.523969",
+  "module": null,
+  "name": "Item Loyalty Points Warning",
+  "script": "frappe.ui.form.on('Item', {\n    custom_loyalty_points: function(frm) {\n        if (frm.doc.custom_loyalty_points > 100) {\n            frappe.msgprint({\n                title: 'High Loyalty Points',\n                message: `Loyalty points (${frm.doc.custom_loyalty_points}) is above 100. Are you sure?`,\n                indicator: 'orange'\n            });\n        }\n    },\n\n    validate: function(frm) {\n        if (frm.doc.custom_loyalty_points < 0) {\n            frappe.throw('Loyalty Points cannot be negative.');\n        }\n    }\n});",
+  "view": "Form"
+ }
+]

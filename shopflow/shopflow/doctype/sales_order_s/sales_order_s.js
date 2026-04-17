@@ -2,17 +2,17 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Sales Order s", {
-	refresh(frm) {
+    refresh(frm) {
 
-	},
+    },
 });
 
 
 frappe.ui.form.on('Sales Order Item s', {
-    product: function(frm, cdt, cdn){
+    product: function (frm, cdt, cdn) {
         let row = locals[cdt][cdn];
-        if (row.product){
-            frappe.db.get_value('Prodcut', row.product, ['price', 'sku'], function(value){
+        if (row.product) {
+            frappe.db.get_value('Product', row.product, ['price', 'sku'], function (value) {
                 frappe.model.set_value(cdt, cdn, 'rate', value.price);
                 frappe.model.set_value(cdt, cdn, 'product_name', value.sku);
             });
